@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.security import check_password_hash
+from functools import wraps
 import mysql.connector
 import os
+import secrets
 
 app = Flask(__name__)
 
-
-# =========================
-# DATABASE CONNECTION
-# =========================
+# Set SECRET_KEY in Render Environment Variables.
+app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -18,76 +19,94 @@ def get_db_connection():
         database=os.environ.get("DB_NAME")
     )
 
+def admin_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if not session.get("admin_logged_in"):
+            return redirect(url_for("login"))
+        return view(*args, **kwargs)
+    return wrapped_view
 
-# =========================
-# HOME PAGE
-# =========================
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if session.get("admin_logged_in"):
+        return redirect(url_for("home"))
 
-@app.route("/")
-def home():
-
-    db = get_db_connection()
-
-    cursor = db.cursor(dictionary=True)
-
-    cursor.execute("SELECT * FROM student")
-
-    students = cursor.fetchall()
-
-    cursor.close()
-    db.close()
-
-    return render_template("index.html", students=students)
-
-
-# =========================
-# REGISTRATION PAGE
-# =========================
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
+    error = None
 
     if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
 
-        name = request.form["name"]
-        email = request.form["email"]
-        course = request.form["course"]
-        semester = request.form["semester"]
-        age = request.form["age"]
+        admin_username = os.environ.get("ADMIN_USERNAME", "")
+        password_hash = os.environ.get("ADMIN_PASSWORD_HASH", "")
 
-        db = get_db_connection()
+        if (
+            admin_username
+            and password_hash
+            and secrets.compare_digest(username, admin_username)
+            and check_password_hash(password_hash, password)
+        ):
+            session.clear()
+            session["admin_logged_in"] = True
+            return redirect(url_for("home"))
 
-        cursor = db.cursor()
+        error = "Invalid username or password."
 
-        sql = """
-        INSERT INTO student
-        (name, email, course, semester, age)
-        VALUES (%s, %s, %s, %s, %s)
-        """
+    response = app.make_response(render_template("login.html", error=error))
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
-        values = (
-            name,
-            email,
-            course,
-            semester,
-            age
-        )
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
-        cursor.execute(sql, values)
-
-        db.commit()
-
+@app.route("/")
+@admin_required
+def home():
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM student")
+        students = cursor.fetchall()
+    finally:
         cursor.close()
         db.close()
+
+    response = app.make_response(
+        render_template("index.html", students=students)
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+@app.route("/register", methods=["GET", "POST"])
+@admin_required
+def register():
+    if request.method == "POST":
+        name = request.form["name"].strip()
+        email = request.form["email"].strip()
+        course = request.form["course"].strip()
+        semester = int(request.form["semester"])
+        age = int(request.form["age"])
+
+        db = get_db_connection()
+        cursor = db.cursor()
+        try:
+            sql = """
+                INSERT INTO student
+                (name, email, course, semester, age)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            cursor.execute(sql, (name, email, course, semester, age))
+            db.commit()
+        finally:
+            cursor.close()
+            db.close()
 
         return redirect(url_for("home"))
 
     return render_template("register.html")
-
-
-# =========================
-# START SERVER
-# =========================
 
 if __name__ == "__main__":
     app.run(debug=True)
