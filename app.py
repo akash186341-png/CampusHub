@@ -1,7 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
+import os
 
 app = Flask(__name__)
+
+
+# =========================
+# DATABASE CONNECTION
+# =========================
+
+def get_db_connection():
+    return mysql.connector.connect(
+        host=os.environ.get("DB_HOST"),
+        port=int(os.environ.get("DB_PORT", 3306)),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        database=os.environ.get("DB_NAME")
+    )
 
 
 # =========================
@@ -11,13 +26,7 @@ app = Flask(__name__)
 @app.route("/")
 def home():
 
-    db = mysql.connector.connect(
-        host="localhost",
-        port=3306,
-        user="root",
-        password="NayaPassword123!",
-        database="campushub"
-    )
+    db = get_db_connection()
 
     cursor = db.cursor(dictionary=True)
 
@@ -46,25 +55,15 @@ def register():
         semester = request.form["semester"]
         age = request.form["age"]
 
-
-        db = mysql.connector.connect(
-            host="localhost",
-            port=3306,
-            user="root",
-            password="NayaPassword123!",
-            database="campushub"
-        )
-
+        db = get_db_connection()
 
         cursor = db.cursor()
-
 
         sql = """
         INSERT INTO student
         (name, email, course, semester, age)
         VALUES (%s, %s, %s, %s, %s)
         """
-
 
         values = (
             name,
@@ -74,18 +73,14 @@ def register():
             age
         )
 
-
         cursor.execute(sql, values)
 
         db.commit()
 
-
         cursor.close()
         db.close()
 
-
         return redirect(url_for("home"))
-
 
     return render_template("register.html")
 
