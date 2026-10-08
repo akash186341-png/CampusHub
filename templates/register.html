@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Registration - CampusHub</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .register-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .register-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .register-form label {
+            font-weight: bold;
+        }
+
+        .register-form input,
+        .register-form select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .register-form button {
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">CampusHub</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/register">Registration</a>
+    </nav>
+
+</header>
+
+
+<main>
+
+    <div class="register-container">
+
+        <h2>Student Registration</h2>
+
+        <form class="register-form"
+              action="/register"
+              method="POST">
+
+            <label>Full Name</label>
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Enter student name"
+                required
+            >
+
+
+            <label>Email id</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                required
+            >
+
+
+            <label>Course</label>
+
+            <select name="course" required>
+
+                <option value="">Select Course</option>
+
+                <option value="BCA">BCA</option>
+
+                <option value="BBA">BBA</option>
+
+                <option value="BCom">B.Com</option>
+
+            </select>
+
+
+            <label>Semester</label>
+
+            <select name="semester" required>
+
+                <option value="">Select Semester</option>
+
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
+
+            </select>
+
+
+            <label>Age</label>
+
+            <input
+                type="number"
+                name="age"
+                placeholder="Enter age"
+                min="15"
+                max="100"
+                required
+            >
+
+
+            <button type="submit">
+                Register Student
+            </button>
+
+        </form>
+
+
+        <a class="back-home" href="/">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</main>
+
+
+<footer>
+    <p>© 2026 CampusHub | Student Management System</p>
+</footer>
+
+</body>
+
+</html>

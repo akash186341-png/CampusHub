@@ -1,0 +1,237 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+/* Navbar */
+.navbar {
+    background: #0f172a;
+    color: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 25px;
+}
+
+.navbar nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.navbar nav a:hover {
+    color: #38bdf8;
+}
+
+/* Hero */
+.hero {
+    min-height: 400px;
+    padding: 80px 7%;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    color: white;
+}
+
+.hero h1 {
+    font-size: 45px;
+    max-width: 650px;
+    margin: 15px 0;
+}
+
+.hero p {
+    font-size: 18px;
+    max-width: 650px;
+    line-height: 1.6;
+}
+
+.tag {
+    font-size: 13px !important;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Button */
+button {
+    margin-top: 25px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    background: #38bdf8;
+    color: #082f49;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+/* Sections */
+.section {
+    padding: 60px 7%;
+}
+
+.section h2 {
+    font-size: 30px;
+    margin-bottom: 30px;
+}
+
+/* Dashboard Cards */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card,
+.course-card,
+.teacher {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+    margin-bottom: 15px;
+}
+
+.card p {
+    font-size: 30px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* Student Table */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #0f172a;
+    color: white;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* Courses */
+.course-card h3 {
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+/* Teachers */
+.teacher-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.teacher h3 {
+    margin-bottom: 10px;
+    color: #2563eb;
+}
+
+/* Registration Form */
+form {
+    max-width: 600px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+form input {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+form input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* Footer */
+footer {
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    margin-top: 30px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .navbar nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .teacher-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 40px 5%;
+    }
+}
